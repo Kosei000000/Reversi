@@ -31,14 +31,17 @@ public class GameController: MonoBehaviour
 
     //盤面
     COLOR[,] board = new COLOR[WIDTH, HEIGHT]; // 8x8の2次元配列
+    COLOR player = COLOR.BLACK;
     public void PutStone(string position)
     {
         //positionをカンマで分ける
         int h = int.Parse(position.Split(',')[0]);
         int v = int.Parse(position.Split(',')[1]);
         //クリックされた座標に駒を置く
-        board[h, v] = COLOR.BLACK;
+        board[h, v] = player;
         ShowBoard();
+        //駒の色を変更
+        player = (player == COLOR.BLACK) ? COLOR.WHITE : COLOR.BLACK;
     }
 
     // Start is called before the first frame update
@@ -77,9 +80,10 @@ public class GameController: MonoBehaviour
                     //pieceにイベントを設定
                     piece.GetComponent<Button>().onClick.AddListener(() => { PutStone(x + "," + y); });
 
-                    //取得したPrefabをboardDisplayの子オブジェクトにする
-                    piece.transform.SetParent(boardDisplay.transform);
+                    
                 }
+                //取得したPrefabをboardDisplayの子オブジェクトにする
+                piece.transform.SetParent(boardDisplay.transform);
             }
         }
     }
