@@ -39,6 +39,8 @@ public class GameController: MonoBehaviour
         int v = int.Parse(position.Split(',')[1]);
         //クリックされた座標に駒を置く
         board[h, v] = player;
+        //ひっくり返す
+        ReverseAll(h, v);
         ShowBoard();
         //駒の色を変更
         player = (player == COLOR.BLACK) ? COLOR.WHITE : COLOR.BLACK;
@@ -87,7 +89,53 @@ public class GameController: MonoBehaviour
             }
         }
     }
-   
+    //1方向にひっくり返す
+    void Reverse(int h, int v, int directionH, int directionV)
+    {
+        //確認する座標x, yを宣言
+        int x = h + directionH, y = v + directionV;
+
+        //挟んでいるか確認してひっくり返す
+        while (x < WIDTH && x >= 0 && y < HEIGHT && y >= 0)
+        {
+            //自分の駒だった場合
+            if (board[x, y] == player)
+            {
+                //ひっくり返す
+                int x2 = h + directionH, y2 = v + directionV;
+                while (!(x2 == x && y2 == y))
+                {
+                    board[x2, y2] = player;
+                    x2 += directionH;
+                    y2 += directionV;
+                }
+                break;
+            }//空欄だった場合
+            else if (board[x, y] == COLOR.EMPTY)
+            {
+                //挟んでいないので処理を終える
+                break;
+            }
+
+            //確認座標を次に進める
+            x += directionH;
+            y += directionV;
+        }
+
+    }
+    //全方向にひっくり返す
+    void ReverseAll(int h, int v)
+    {
+        Reverse(h, v, 1, 0);  //右方向
+        Reverse(h, v, -1, 0); //左方向
+        Reverse(h, v, 0, -1); //上方向
+        Reverse(h, v, 0, 1);  //下方向
+        Reverse(h, v, 1, -1); //右上方向
+        Reverse(h, v, -1, -1);//左上方向
+        Reverse(h, v, 1, 1);  //右下方向
+        Reverse(h, v, -1, 1); //左下方向
+    }
+    
     //色によって適切なprefabを取得して返す
     GameObject GetPrefab(COLOR color)
     {
@@ -109,4 +157,4 @@ public class GameController: MonoBehaviour
         }
         return prefab; //取得したPrefabを返す
     }
-}
+} 
